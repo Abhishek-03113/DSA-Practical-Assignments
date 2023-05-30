@@ -1,136 +1,239 @@
-#include <iostream>
+#include<iostream>
+#include<stdlib.h>
+#include<string.h>
 using namespace std;
-int top = -1;
-int top1 = -1;
-int top2 = -1;
 
-struct tree {
-	char data;
-	tree *left;
-	tree *right;
+struct node
+{
+	char name[20];
+	node *next,*down;
+	int flag;
 };
-class Stack {
-	public:
-		tree *root = NULL;
-		int count;
-		int j;
-		tree *st[10];
-		tree *s[10];
-		tree *st1[10];
-		string exp;
-		void push(tree *root) {
-			top++;
-			st[top] = root;
-		}
-		tree *pop() {
-			tree *ptr = st[top];
-			top--;
-			return ptr;
-		}
-		void push1(tree *root) {
-			top1++;
-			s[top1] = root;
-		}
-		void pop1() {
-			top1--;
-		}
-		void push2(tree *root) {
 
-			top2++;
-			st1[top2] = root;
-		}
-		void pop2() {
-			top2--;
-		}
-		void inorder(tree *root) {
-			if(root != NULL) {
-				inorder(root -> left);
-				cout<<root -> data;
-				inorder(root -> right);
+class Gll
+{
+	char ch[20];
+	int n,i;
+	node *head=NULL,*temp=NULL,*t1=NULL,*t2=NULL;
+public:
+	node *create();
+	void insertbook();
+	void insertchapter();
+	void insertsection();
+	void insertsubsection();
+	void displaybook();
+};
+
+node *Gll::create()
+{
+	node *p=new(struct node);
+	p->next=NULL;
+	p->down=NULL;
+	p->flag=0;
+	cout<<"\nEnter the name: ";
+	cin>>p->name;
+	return p;
+}
+
+void Gll::insertbook()
+{
+	if(head==NULL)
+	{
+		t1=create();
+		head=t1;
+	}
+	else{
+		cout<<"\nBook already exists";
+	}
+}
+
+void Gll::insertchapter()
+{
+	if(head==NULL)
+	{
+		cout<<"\nThere is no book";
+	}
+	else{
+		cout<<"\nHow many chapters are to be inserted?: ";
+		cin>>n;
+		for(i=0;i<n;i++){
+			t1=create();
+			if(head->flag==0){
+				head->down=t1;
+				head->flag=1;
+			}
+			else{
+				temp=head;
+				temp=temp->down;
+				while(temp->next!=NULL)
+					temp=temp->next;
+				temp->next=t1;
 			}
 		}
-		void postorder(tree *root) {
-			if(root != NULL) {
-				inorder(root -> left);
-				inorder(root -> right);
-				cout<<root -> data;
+	}
+}
+
+void Gll::insertsection()
+{
+	if(head==NULL)
+		{
+			cout<<"\nThere is no book";
+		}
+	else{
+		cout<<"\nEnter name of chapter in which you want to enter the section: ";
+		cin>>ch;
+		temp=head;
+		if(temp->flag==0){
+			cout<<"\nThere are no chapters in the book";
+		}
+		else{
+			temp=temp->down;
+			while(temp!=NULL){
+				if(!strcmp(ch,temp->name)){
+					cout<<"\nHow many sections do you want to insert?";
+					cin>>n;
+					for(i=0;i<n;i++){
+						t1=create();
+						if(temp->flag==0){
+							temp->down=t1;
+							temp->flag=1;
+							t2=temp->down;
+						}
+						else{
+							while(t2->next!=NULL){
+								t2=t2->next;
+							}
+							t2->next=t1;
+						}
+					}
+					break;
+				}
+				temp=temp->next;
 			}
 		}
-
-		void process();
-		void postorderT(tree *root);
-		void del(tree *root);
-		tree *create(char data) {
-			tree *newnode = new(struct tree);
-			newnode -> data = data;
-			newnode -> left = NULL;
-			newnode -> right = NULL;
-			return newnode;
-		}
-};
-void Stack :: postorderT(tree *root) {
-	if(root == NULL)
-		return;
-	push1(root);
-
-	tree *ntr;
-	while(top1 != -1) {
-		ntr = s[top1];
-		pop1();
-		push2(ntr);
-		if(ntr -> left)
-			push1(ntr -> left);
-		if(ntr -> right)
-			push1(ntr -> right);
-	}
-	while(top2 != -1) {
-		ntr = st1[top2];
-		pop2();
-		cout<<ntr -> data;
 	}
 }
-void Stack :: del(tree *root) {
-	if(root != NULL) {
-		del(root -> left);
-		del(root -> right);
-		cout<<endl;
-		cout<<"The deleted data is"<<root -> data<<endl;
-		delete root;
-	}
-}
-void Stack :: process() {
-	cout<<"Enter the Prefix Expression"<<endl;
-	cin>>exp;
-	count = 0;
-	for(int i = 0; exp[i]; i++) {
-		count++;
-	}
-	j = count - 1;
-	while(j >= 0) {
-		if(exp[j] >= '0' && exp[j] <= '9') {
-			tree *node = create(exp[j]);
-			push(node);
-		}
 
-		else {
-			tree *temp = pop();
-			tree *temp1 = pop();
-			tree *newnode2 = create(exp[j]);
-			newnode2 -> left = temp;
-			newnode2 -> right = temp1;
-			push(newnode2);
-		}
-		j--;
+void Gll::insertsubsection(){
+	if(head==NULL)
+	{
+		cout<<"\nThere is no book";
 	}
-	tree *newnode1 = pop();
-	inorder(newnode1);
-	cout<<endl;
-	cout<<"The postorder without recurssion is: ";
-	postorderT(newnode1);
-	del(newnode1);
+	else{
+		cout<<"\nEnter name of chapter in which you want to enter the sub section: ";
+		cin>>ch;
+		temp=head;
+		if(temp->flag==0){
+			cout<<"\nThere are no chapters in the book";
+		}
+		else{
+			temp=temp->down;
+			while(temp!=NULL){
+				if(!strcmp(ch,temp->name)){
+					cout<<"\nEnter name of section in which you want to enter the sub section: ";
+					cin>>ch;
+					if(temp->flag==0){
+						cout<<"\nThere are no sections";
+					}
+					else{
+						temp=temp->down;
+						while(temp!=NULL){
+							if(!strcmp(ch,temp->name)){
+								cout<<"\nHow many sub sections do you want to insert?";
+								cin>>n;
+								for(i=0;i<n;i++){
+									t1=create();
+									if(temp->flag==0){
+										temp->down=t1;
+										temp->flag=1;
+										t2=temp->down;
+									}
+									else{
+										while(t2->next!=NULL){
+											t2=t2->next;
+										}
+										t2->next=t1;
+									}
+								}
+								break;
+							}
+							temp=temp->next;
+						}
+					}
+				}
+				temp=temp->next;
+			}
+		}
+	}
 }
-int main() {
-	Stack st;
-	st.process();
+
+
+void Gll::displaybook()
+{
+	if(head==NULL)
+		cout<<"\nBook does not exist";
+	else
+	{
+		temp=head;
+		cout<<"\nName of Book: "<<temp->name;
+		if(temp->flag==1){
+			temp=temp->down;
+			while(temp!=NULL){
+				cout<<"\nName of Chapter: "<<temp->name;;
+				t1=temp;
+				if(t1->flag==1){
+					t1=t1->down;
+					while(t1!=NULL){
+						cout<<"\nName of Section: "<<t1->name;
+						t2=t1;
+						if(t2->flag==1){
+							t2=t2->down;
+							while(t2!=NULL){
+								cout<<"\nName of Sub-section: "<<t2->name;
+								t2=t2->next;
+							}
+						}
+						t1=t1->next;
+					}
+				}
+				temp=temp->next;
+			}
+		}
+	}
+}
+
+int main()
+{
+	Gll g;
+	int x;
+	while(1){
+		cout<<"\nEnter your choice";
+		cout<<"\n1.Insert Book";
+		cout<<"\n2.Insert Chapter";
+		cout<<"\n3.Insert Section";
+		cout<<"\n4.Insert Subsection";
+		cout<<"\n5.Display Book";
+		cout<<"\n6.Exit";
+		cin>>x;
+		switch(x){
+			case 1:
+				g.insertbook();
+				break;
+			case 2:
+				g.insertchapter();
+				break;
+			case 3:
+				g.insertsection();
+				break;
+			case 4:
+				g.insertsubsection();
+				break;
+			case 5:
+				g.displaybook();
+				break;
+			case 6:
+				exit(0);
+		}
+	}
 	return 0;
 }
