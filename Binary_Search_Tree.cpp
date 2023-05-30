@@ -1,240 +1,159 @@
-#include<iostream>
-#include<stdlib.h>
-#include<string.h>
+#include <iostream>
 using namespace std;
 
-struct node
-{
-	char name[20];
-	node *next,*down;
-	int flag;
+// Binary Search Tree Node
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
 };
 
-class Gll
-{
-	char ch[20];
-	int n,i;
-	node *head=NULL,*temp=NULL,*t1=NULL,*t2=NULL;
-public:
-	node *create();
-	void insertbook();
-	void insertchapter();
-	void insertsection();
-	void insertsubsection();
-	void displaybook();
-};
-
-node *Gll::create()
-{
-	node *p=new(struct node);
-	p->next=NULL;
-	p->down=NULL;
-	p->flag=0;
-	cout<<"\nEnter the name: ";
-	cin>>p->name;
-	return p;
+// Function to create a new node
+Node* createNode(int value) {
+    Node* newNode = new Node();
+    if (newNode == nullptr) {
+        cout << "Memory allocation failed!" << endl;
+        return nullptr;
+    }
+    newNode->data = value;
+    newNode->left = nullptr;
+    newNode->right = nullptr;
+    return newNode;
 }
 
-void Gll::insertbook()
-{
-	if(head==NULL)
-	{
-		t1=create();
-		head=t1;
-	}
-	else{
-		cout<<"\nBook already exists";
-	}
+// Function to insert a node in BST
+Node* insertNode(Node* root, int value) {
+    if (root == nullptr) {
+        root = createNode(value);
+        return root;
+    }
+    if (value < root->data) {
+        root->left = insertNode(root->left, value);
+    } else if (value > root->data) {
+        root->right = insertNode(root->right, value);
+    }
+    return root;
 }
 
-void Gll::insertchapter()
-{
-	if(head==NULL)
-	{
-		cout<<"\nThere is no book";
-	}
-	else{
-		cout<<"\nHow many chapters are to be inserted?: ";
-		cin>>n;
-		for(i=0;i<n;i++){
-			t1=create();
-			if(head->flag==0){
-				head->down=t1;
-				head->flag=1;
-			}
-			else{
-				temp=head;
-				temp=temp->down;
-				while(temp->next!=NULL)
-					temp=temp->next;
-				temp->next=t1;
-			}
-		}
-	}
+// Function to find the number of nodes in the longest path from the root
+int findMaxDepth(Node* root) {
+    if (root == nullptr)
+        return 0;
+    else {
+        int leftDepth = findMaxDepth(root->left);
+        int rightDepth = findMaxDepth(root->right);
+        return max(leftDepth, rightDepth) + 1;
+    }
 }
 
-void Gll::insertsection()
-{
-	if(head==NULL)
-		{
-			cout<<"\nThere is no book";
-		}
-	else{
-		cout<<"\nEnter name of chapter in which you want to enter the section: ";
-		cin>>ch;
-		temp=head;
-		if(temp->flag==0){
-			cout<<"\nThere are no chapters in the book";
-		}
-		else{
-			temp=temp->down;
-			while(temp!=NULL){
-				if(!strcmp(ch,temp->name)){
-					cout<<"\nHow many sections do you want to insert?";
-					cin>>n;
-					for(i=0;i<n;i++){
-						t1=create();
-						if(temp->flag==0){
-							temp->down=t1;
-							temp->flag=1;
-							t2=temp->down;
-						}
-						else{
-							while(t2->next!=NULL){
-								t2=t2->next;
-							}
-							t2->next=t1;
-						}
-					}
-					break;
-				}
-				temp=temp->next;
-			}
-		}
-	}
+// Function to find the minimum value in BST
+int findMinValue(Node* root) {
+    if (root == nullptr) {
+        cout << "Tree is empty." << endl;
+        return -1;
+    }
+    while (root->left != nullptr) {
+        root = root->left;
+    }
+    return root->data;
 }
 
-void Gll::insertsubsection(){
-	if(head==NULL)
-	{
-		cout<<"\nThere is no book";
-	}
-	else{
-		cout<<"\nEnter name of chapter in which you want to enter the sub section: ";
-		cin>>ch;
-		temp=head;
-		if(temp->flag==0){
-			cout<<"\nThere are no chapters in the book";
-		}
-		else{
-			temp=temp->down;
-			while(temp!=NULL){
-				if(!strcmp(ch,temp->name)){
-					cout<<"\nEnter name of section in which you want to enter the sub section: ";
-					cin>>ch;
-					if(temp->flag==0){
-						cout<<"\nThere are no sections";
-					}
-					else{
-						temp=temp->down;
-						while(temp!=NULL){
-							if(!strcmp(ch,temp->name)){
-								cout<<"\nHow many sub sections do you want to insert?";
-								cin>>n;
-								for(i=0;i<n;i++){
-									t1=create();
-									if(temp->flag==0){
-										temp->down=t1;
-										temp->flag=1;
-										t2=temp->down;
-									}
-									else{
-										while(t2->next!=NULL){
-											t2=t2->next;
-										}
-										t2->next=t1;
-									}
-								}
-								break;
-							}
-							temp=temp->next;
-						}
-					}
-				}
-				temp=temp->next;
-			}
-		}
-	}
+// Function to swap left and right pointers at every node in BST
+Node* swapTreePointers(Node* root) {
+    if (root == nullptr)
+        return nullptr;
+    Node* temp = root->left;
+    root->left = root->right;
+    root->right = temp;
+    swapTreePointers(root->left);
+    swapTreePointers(root->right);
+    return root;
 }
 
-
-void Gll::displaybook()
-{
-	if(head==NULL)
-		cout<<"\nBook does not exist";
-	else
-	{
-		temp=head;
-		cout<<"\nName of Book: "<<temp->name;
-		if(temp->flag==1){
-			temp=temp->down;
-			while(temp!=NULL){
-				cout<<"\nName of Chapter: "<<temp->name;;
-				t1=temp;
-				if(t1->flag==1){
-					t1=t1->down;
-					while(t1!=NULL){
-						cout<<"\nName of Section: "<<t1->name;
-						t2=t1;
-						if(t2->flag==1){
-							t2=t2->down;
-							while(t2!=NULL){
-								cout<<"\nName of Sub-section: "<<t2->name;
-								t2=t2->next;
-							}
-						}
-						t1=t1->next;
-					}
-				}
-				temp=temp->next;
-			}
-		}
-	}
+// Function to search for a value in BST
+bool searchValue(Node* root, int value) {
+    if (root == nullptr)
+        return false;
+    if (root->data == value)
+        return true;
+    if (value < root->data)
+        return searchValue(root->left, value);
+    else
+        return searchValue(root->right, value);
 }
 
-int main()
-{
-	Gll g;
-	int x;
-	while(1){
-		cout<<"\nEnter your choice";
-		cout<<"\n1.Insert Book";
-		cout<<"\n2.Insert Chapter";
-		cout<<"\n3.Insert Section";
-		cout<<"\n4.Insert Subsection";
-		cout<<"\n5.Display Book";
-		cout<<"\n6.Exit";
-		cin>>x;
-		switch(x){
-			case 1:
-				g.insertbook();
-				break;
-			case 2:
-				g.insertchapter();
-				break;
-			case 3:
-				g.insertsection();
-				break;
-			case 4:
-				g.insertsubsection();
-				break;
-			case 5:
-				g.displaybook();
-				break;
-			case 6:
-				exit(0);
-		}
-	}
-	return 0;
+// Function to display the BST in Inorder traversal
+void inorderTraversal(Node* root) {
+    if (root != nullptr) {
+        inorderTraversal(root->left);
+        cout << root->data << " ";
+        inorderTraversal(root->right);
+    }
 }
 
+// Function to display the menu
+void displayMenu() {
+    cout << "\n------------------------" << endl;
+    cout << "Binary Search Tree Menu" << endl;
+    cout << "------------------------" << endl;
+    cout << "1. Insert Node" << endl;
+    cout << "2. Find Number of Nodes in Longest Path from Root" << endl;
+    cout << "3. Find Minimum Value in the Tree" << endl;
+    cout << "4. Swap the Roles of Left and Right Pointers" << endl;
+    cout << "5. Search a Value" << endl;
+    cout << "6. Display Tree (Inorder Traversal)" << endl;
+    cout << "7. Exit" << endl;
+    cout << "------------------------" << endl;
+    cout << "Enter your choice: ";
+}
+
+int main() {
+    Node* root = nullptr;
+    int choice, value;
+    bool exitMenu = false;
+
+    while (!exitMenu) {
+        displayMenu();
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter the value to insert: ";
+                cin >> value;
+                root = insertNode(root, value);
+                cout << "Node inserted successfully." << endl;
+                break;
+            case 2:
+                cout << "Number of nodes in the longest path from root: " << findMaxDepth(root) << endl;
+                break;
+            case 3:
+                cout << "Minimum value in the tree: " << findMinValue(root) << endl;
+                break;
+            case 4:
+                root = swapTreePointers(root);
+                cout << "Tree pointers swapped successfully." << endl;
+                break;
+            case 5:
+                cout << "Enter the value to search: ";
+                cin >> value;
+                if (searchValue(root, value))
+                    cout << "Value found in the tree." << endl;
+                else
+                    cout << "Value not found in the tree." << endl;
+                break;
+            case 6:
+                cout << "Tree (Inorder Traversal): ";
+                inorderTraversal(root);
+                cout << endl;
+                break;
+            case 7:
+                exitMenu = true;
+                break;
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+                break;
+        }
+    }
+
+    return 0;
+}
