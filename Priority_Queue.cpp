@@ -61,7 +61,7 @@ void Queue::display()
 {
     struct node *temp;
     cout << "priority \t name \t\t patient name" << endl;
-    for (temp = front; temp != '\0'; temp = temp->next)
+    for (temp = front; temp = temp->next;)
     {
         if (temp->prior == 1)
             cout << temp->prior << "\t \t serious\t\t" << temp->pnm << endl;
