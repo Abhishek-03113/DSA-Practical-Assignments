@@ -1,114 +1,130 @@
-include<iostream>
+#include<iostream>
+#include<string.h>
 using namespace std;
-class heap {
-		int n;
-		int maxh[30];
-		int h[30];
-	public:
-		void create1();
-		void insert1(int);
-		void upAdjust1(int);
-		void display1();
-		void create2();
-		void insert2(int);
-		void upAdjust2(int);
-		void display2();
+struct node
+{
+int data,prior;
+char pnm[10],name[10];
+struct node *next;
+}*front,*rear;
+class Queue
+{
+public:
+int isempty();
+void pq_insert(int prior,char name[10]);
+ void display();
+ void p_delete();
 };
-void heap::create1() {
-	int x;
-	cout<<"\nEnter the size of array:";
-	cin>>n;
-	cout<<"\nEnter marks of "<<n-1<<" students:"<<endl;
-	for(int i=1; i<n; i++) {
-		cin>>maxh[i];
-		x=maxh[i];
-		insert1(x);
-	}
+int Queue::isempty()
+{
+if((rear=front)==NULL)
+{
+return 1;
 }
-void heap::insert1(int x) {
-	int m;
-	m=maxh[0];
-	maxh[m+1]=x;
-	maxh[0]=m+1;
-	upAdjust1(m+1);
+return 0;
 }
-void heap::upAdjust1(int i) {
-	int temp;
-	while(i>1 && maxh[i]>maxh[i/2]) {
-		temp=maxh[i];
-		maxh[i]=maxh[i/2];
-		maxh[i/2]=temp;
-		i=i/2;
-	}
+struct node *createnode(int prior,char name[10])
+{
+ struct node *temp;
+ temp=new node;
+ strcpy(temp->pnm,name);
+ temp->prior=prior;
+ temp->next=NULL;
+ return temp;
 }
-void heap::display1() {
-	cout<<"\nNumber of students:"<<maxh[0];
-	cout<<"\nTheir marks:";
-	for(int i=1; i<n; i++) {
-		cout<<"\n"<<maxh[i];
-	}
-	cout<<"\nMaximum Marks:"<<maxh[1];
+void Queue::pq_insert(int prior,char name[10])
+{
+int i;
+struct node *temp;
+temp=createnode(prior,name);
+if(isempty())
+{
+front=rear=temp;
 }
-void heap::create2() {
-	int x;
-	cout<<"\nEnter the size of array:";
-	cin>>n;
-	cout<<"\nEnter marks of "<<n-1<<" students:"<<endl;
-	for(int i=1; i<n; i++) {
-		cin>>h[i];
-		x=h[i];
-		insert2(x);
-	}
+else if(front->prior > temp->prior)
+{
+ temp->next=front;
+ front=temp;
 }
-void heap::insert2(int x) {
-	int m;
-	m=h[0];
-	h[m+1]=x;
-	h[0]=m+1;
-	upAdjust2(m+1);
+else
+{
+rear=front;
+while(rear->next!=NULL && temp->prior >= rear->next->prior)
+{
+rear=rear->next;
 }
-void heap::upAdjust2(int i) {
-	int temp;
-	while(i>1 && h[i]<h[i/2]) {
-		temp=h[i];
-		h[i]=h[i/2];
-		h[i/2]=temp;
-		i=i/2;
-	}
+temp->next=rear->next;
+rear->next=temp;
+ }
 }
-void heap::display2() {
-	cout<<"\nNumber of students:"<<h[0];
-	cout<<"\nTheir marks:";
-	for(int i=1; i<n; i++) {
-		cout<<"\n"<<h[i];
-	}
-	cout<<"\nMinimum Marks:"<<h[1];
+void Queue::display()
+{
+struct node *temp;
+cout<<"priority \t name \t\t patient name"<<endl;
+for(temp=front;temp!='\0';temp=temp->next)
+{
+if(temp->prior==1)
+ cout<<temp->prior<<"\t \t serious\t\t"<<temp->pnm<<endl;
+if(temp->prior==2)
+ cout<<temp->prior<<"\t \t medium \t \t"<<temp->pnm<<endl;
+if(temp->prior==3)
+ cout<<temp->prior<<"\t \t normal \t \t"<<temp->pnm<<endl;
 }
-int main() {
-	heap h1;
-	int ch;
-	char ans;
-	do {
-		cout<<"\nMenu"<<"\n1:Create max heap"<<"\n2:Display max heap"<<"\n3:Create min heap"<<"\n4:Displ
-		    ay min heap";
-		    cout<<"\nEnter choice:";
-		cin>>ch;
-		switch(ch) {
-			case 1:
-				h1.create1();
-				break;
-			case 2:
-				h1.display1();
-				break;
-			case 3:
-				h1.create2();
-				break;
-			case 4:
-				h1.display2();
-				break;
-		}
-		cout<<"\nWant to continue?(y/n):";
-		cin>>ans;
-	} while(ans!=’n’);
-	return 0;
+}
+void Queue::p_delete()
+{
+struct node *temp;
+temp=front;
+front=front->next;
+temp->next=NULL;
+cout<<"\n"<<temp->pnm<<" patient checked successfully \n "<<endl;
+delete temp;
+display();
+}
+int main()
+{
+int priority,i,ch,n;
+int ans,patient_no;
+char name[10];
+Queue q;
+do
+{
+cout<<"\n hospital history";
+ cout<<"\n 1.enter the record u want";
+ cout<<"\n 2.display";
+ cout<<"\n 3.delete";
+cout<<"\n enter ur choice";
+cin>>ch;
+switch(ch)
+{
+case 1:
+ cout<<"\n 1.serious";
+ cout<<"\n 2.medium";
+ cout<<"\n 3.normal";
+ cout<<"\n enter the no of patient";
+ cin>>n;
+for(i=0;i<n;i++)
+{
+cout<<"\n enter severity=";
+ cin>>priority;
+ cout<<"\n enter patient name=";
+cin>>name;
+ q.pq_insert(priority,name);
+}
+break;
+case 2:
+q.display();
+break;
+case 3:
+q.p_delete();
+break;
+case 4:
+ cout<<"\n wrong choice";
+ cin>>ch;
+ break;
+}
+cout<<"\n is any patient=?";
+cin>>ans;
+}while(ans==1);
+return 0;
 }
