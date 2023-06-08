@@ -1,13 +1,11 @@
-zz
 // Experiment No. 10
 // Problem Statement:  Implementation of a Priority Queue as ADT.
 
 #include <iostream>
 #include <string>
 
-// #define N 20
-
 using namespace std;
+
 string Q[10];
 int Pr[10];
 int r = -1, f = -1, n;
