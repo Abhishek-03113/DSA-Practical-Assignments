@@ -1,131 +1,185 @@
+zz
+// Experiment No. 10
+// Problem Statement:  Implementation of a Priority Queue as ADT.
+
 #include <iostream>
-#include <string.h>
+#include <string>
+
+// #define N 20
+
 using namespace std;
-struct node
+string Q[10];
+int Pr[10];
+int r = -1, f = -1, n;
+void enqueue(string data, int p) // Enqueue function to insert data and its priority in queue
 {
-    int data, prior;
-    char pnm[10], name[10];
-    struct node *next;
-} *front, *rear;
-class Queue
-{
-public:
-    int isempty();
-    void pq_insert(int prior, char name[10]);
-    void display();
-    void p_delete();
-};
-int Queue::isempty()
-{
-    if ((rear = front) == NULL)
-    {
-        return 1;
-    }
-    return 0;
-}
-struct node *createnode(int prior, char name[10])
-{
-    struct node *temp;
-    temp = new node;
-    strcpy(temp->pnm, name);
-    temp->prior = prior;
-    temp->next = NULL;
-    return temp;
-}
-void Queue::pq_insert(int prior, char name[10])
-{
+
     int i;
-    struct node *temp;
-    temp = createnode(prior, name);
-    if (isempty())
+    if ((f == 0) && (r == n - 1)) // Check if Queue is full
+        cout << "Queue is full";
+    else
     {
-        front = rear = temp;
+        if (f == -1)
+        { // if Queue is empty
+            f = r = 0;
+            Q[r] = data;
+            Pr[r] = p;
+        }
+        else
+        {
+            for (i = r; i >= f; i--)
+            {
+                if (p > Pr[i])
+                {
+                    Q[i + 1] = Q[i];
+                    Pr[i + 1] = Pr[i];
+                }
+                else
+                    break;
+            }
+            Q[i + 1] = data;
+            Pr[i + 1] = p;
+            r++;
+        }
     }
-    else if (front->prior > temp->prior)
+}
+void print()
+{ // print the data of Queue
+    int i;
+    for (i = f; i <= r; i++)
     {
-        temp->next = front;
-        front = temp;
+        cout << "Patient's Name - " << Q[i];
+        switch (Pr[i])
+        {
+        case 1:
+            cout << " Priority - 'Checkup' " << endl;
+            break;
+        case 2:
+            cout << " Priority - 'Non-serious' " << endl;
+            break;
+        case 3:
+            cout << " Priority - 'Serious' " << endl;
+            break;
+        default:
+            cout << "Priority not found" << endl;
+        }
+    }
+}
+
+void dequeue()
+{ // remove the data from front
+    if (f == -1)
+    {
+        cout << "Queue is Empty";
     }
     else
     {
-        rear = front;
-        while (rear->next != NULL && temp->prior >= rear->next->prior)
-        {
-            rear = rear->next;
-        }
-        temp->next = rear->next;
-        rear->next = temp;
+        cout << "deleted Element =" << Q[f] << endl;
+        cout << "Its Priority = " << Pr[f] << endl;
+        if (f == r)
+            f = r = -1;
+        else
+            f++;
     }
 }
-void Queue::display()
-{
-    struct node *temp;
-    cout << "priority \t name \t\t patient name" << endl;
-    for (temp = front; temp = temp->next;)
-    {
-        if (temp->prior == 1)
-            cout << temp->prior << "\t \t serious\t\t" << temp->pnm << endl;
-        if (temp->prior == 2)
-            cout << temp->prior << "\t \t medium \t \t" << temp->pnm << endl;
-        if (temp->prior == 3)
-            cout << temp->prior << "\t \t normal \t \t" << temp->pnm << endl;
-    }
-}
-void Queue::p_delete()
-{
-    struct node *temp;
-    temp = front;
-    front = front->next;
-    temp->next = NULL;
-    cout << "\n"
-         << temp->pnm << " patient checked successfully \n " << endl;
-    delete temp;
-    display();
-}
+
 int main()
 {
-    int priority, i, ch, n;
-    int ans, patient_no;
-    char name[10];
-    Queue q;
+    string data;
+    int opt, i, p;
+    cout << "Enter Your Choice:-" << endl;
     do
     {
-        cout << "\n hospital history";
-        cout << "\n 1.enter the record u want";
-        cout << "\n 2.display";
-        cout << "\n 3.delete";
-        cout << "\n enter ur choice";
-        cin >> ch;
-        switch (ch)
+        cout << "1 for Insert the Data in Queue" << endl
+             << "2 for show the Data in Queue " << endl
+             << "3 for Delete the data from the Queue"
+             << endl
+             << "0 for Exit" << endl;
+        cin >> opt;
+        switch (opt)
         {
         case 1:
-            cout << "\n 1.serious";
-            cout << "\n 2.medium";
-            cout << "\n 3.normal";
-            cout << "\n enter the no of patient";
+            cout << "Enter the number of patinent" << endl;
             cin >> n;
+            i = 0;
             for (i = 0; i < n; i++)
             {
-                cout << "\n enter severity=";
-                cin >> priority;
-                cout << "\n enter patient name=";
-                cin >> name;
-                q.pq_insert(priority, name);
+                cout << "Enter your name of the patient : ";
+                cin >> data;
+
+                cout << "Enter your Prioritys (3: serious, 2: non-serious, 1: genral checkup) : ";
+                cin >> p;
+                enqueue(data, p);
             }
             break;
         case 2:
-            q.display();
+            print();
             break;
         case 3:
-            q.p_delete();
-            break;
-        case 4:
-            cout << "\n wrong choice";
-            cin >> ch;
+            dequeue();
             break;
         }
-        cout << "\n is any patient=?";
-        cin >> ans;
-    } while (ans == 1);
+    } while (opt != 0);
     return 0;
 }
+
+/*
+
+Enter Your Choice:-
+1 for Insert the Data in Queue
+2 for show the Data in Queue
+3 for Delete the data from the Queue
+0 for Exit
+1
+Enter the number of patinent
+5
+Enter your name of the patient : Dinesh
+Enter your Prioritys (3: serious, 2: non-serious, 1: genral checkup) : 3
+Enter your name of the patient : Omkar
+Enter your Prioritys (3: serious, 2: non-serious, 1: genral checkup) : 2
+Enter your name of the patient : Pragati
+Enter your Prioritys (3: serious, 2: non-serious, 1: genral checkup) : 2
+Enter your name of the patient : Tanmay
+Enter your Prioritys (3: serious, 2: non-serious, 1: genral checkup) : 1
+Enter your name of the patient : Alisha
+Enter your Prioritys (3: serious, 2: non-serious, 1: genral checkup) : 3
+1 for Insert the Data in Queue
+2 for show the Data in Queue
+3 for Delete the data from the Queue
+0 for Exit
+2
+Patient's Name - Dinesh Priority - 'Serious'
+Patient's Name - Alisha Priority - 'Serious'
+Patient's Name - Omkar Priority - 'Non-serious'
+Patient's Name - Pragati Priority - 'Non-serious'
+Patient's Name - Tanmay Priority - 'Checkup'
+1 for Insert the Data in Queue
+2 for show the Data in Queue
+3 for Delete the data from the Queue
+0 for Exit
+3
+deleted Element =Dinesh
+Its Priority = 3
+1 for Insert the Data in Queue
+2 for show the Data in Queue
+3 for Delete the data from the Queue
+0 for Exit
+3
+deleted Element =Alisha
+Its Priority = 3
+1 for Insert the Data in Queue
+2 for show the Data in Queue
+3 for Delete the data from the Queue
+0 for Exit
+2
+Patient's Name - Omkar Priority - 'Non-serious'
+Patient's Name - Pragati Priority - 'Non-serious'
+Patient's Name - Tanmay Priority - 'Checkup'
+1 for Insert the Data in Queue
+2 for show the Data in Queue
+3 for Delete the data from the Queue
+0 for Exit
+
+
+
+ */
