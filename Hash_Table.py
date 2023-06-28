@@ -12,7 +12,7 @@ def linear_probe_insert(HashTable,keyvalue,value):
         while HashTable[i%len(HashTable)]:
             i += 1
         HashTable[i%len(HashTable)].append((keyvalue,value))
-
+    
 def seperate_chaining_insert(HashTable,keyvalue,value):
     Hashkey = Hashing(keyvalue)
     HashTable[Hashkey].append((keyvalue,value))
